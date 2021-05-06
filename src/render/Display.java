@@ -42,13 +42,13 @@ public class Display extends Canvas implements Runnable{
         display.start();
     }
 
-    public synchronized void start(){
+    public synchronized void start() {
         this.running = true;
         thread = new Thread(this, "display");
         this.thread.start();
     }
 
-    public synchronized void stop(){
+    public synchronized void stop() {
         running = false;
         try {
             this.thread.join();
@@ -72,34 +72,34 @@ public class Display extends Canvas implements Runnable{
             while(delta >= 1){
                 update();
                 delta--;
+                render();
+                frames++;
             }
-            render();
-            frames++;
+
             if(System.currentTimeMillis() - timer > 1000){
                 timer += 1000;
-                this.frame.setTitle(title + " | " + frames + " fps");
+                this.frame.setTitle(title + "  |  " + frames + " fps");
                 frames = 0;
             }
         }
         stop();
     }
 
-    private void init(){
+    private void init() {
         int size = 100;
         MyPoint[] cube = cube(size);
         tetrahedron = new Tetrahedron(
-                Color.YELLOW,
-                new MyPolygon(cube[0], cube[1], cube[2], cube[3]),
-                new MyPolygon(cube[4], cube[5], cube[6], cube[7]),
-                new MyPolygon(cube[0], cube[1], cube[4], cube[5]),
-                new MyPolygon(cube[0], cube[4], cube[7], cube[3]),
-                new MyPolygon(cube[1], cube[5], cube[6], cube[2]),
-                new MyPolygon(cube[3], cube[2], cube[6], cube[7])
+                new MyPolygon(Color.decode("#8C00FF"), cube[0], cube[1], cube[2], cube[3]),
+                new MyPolygon(Color.decode("#6D00D0"), cube[4], cube[5], cube[6], cube[7]),
+                new MyPolygon(Color.decode("#6000BF"), cube[0], cube[1], cube[5], cube[4]),
+                new MyPolygon(Color.decode("#5300A6"), cube[0], cube[4], cube[7], cube[3]),
+                new MyPolygon(Color.decode("#420083"), cube[1], cube[5], cube[6], cube[2]),
+                new MyPolygon(Color.decode("#390072"), cube[3], cube[2], cube[6], cube[7])
                 );
     }
 
     // Create the polygons required for a cube of a specified size.
-    private MyPoint[] cube(int size){
+    private MyPoint[] cube(int size) {
         MyPoint[] cube = new MyPoint[8];
         MyPoint p1 = new MyPoint(size/2, -size/2, -size/2);
         MyPoint p2 = new MyPoint(size/2, size/2, -size/2);
@@ -120,7 +120,7 @@ public class Display extends Canvas implements Runnable{
             return;
         }
         Graphics g = bs.getDrawGraphics();
-        g.setColor(Color.DARK_GRAY);
+        g.setColor(Color.decode("#2B2B2B"));
         g.fillRect(0, 0, WIDTH, HEIGHT);
 
         tetrahedron.render(g);
@@ -130,6 +130,6 @@ public class Display extends Canvas implements Runnable{
     }
 
     private void update() {
-
+        this.tetrahedron.rotate(true, 1, 1, 2);
     }
 }
